@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:online_shop/screens/products.dart';
+import 'package:online_shop/screens/basket.dart';
+import 'package:online_shop/screens/user.dart';
 
 void main() {
   runApp(MyApp());
@@ -52,15 +54,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  int _selectedIndex = 0;
+
+   List<Widget> _widgetOptions = [
+      ProductsScreen(),
+      BasketScreen(),
+      UserScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("MyApp"),
-      ),
-      body: ProductsScreen(),
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_basket_outlined),
+            label: 'Basket',
+            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Account',
+            ),
+          ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        ),
     );
+
   }
 }

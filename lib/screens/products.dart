@@ -22,7 +22,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
     models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
     models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
     models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
-
+    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
+    models.add(new ProductModel("Шорты", "Чуть-чуть воняют", "120 руб"));
+    models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
+    models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
+    models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
+    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
+    models.add(new ProductModel("Шорты", "Чуть-чуть воняют", "120 руб"));
+    models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
+    models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
+    models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
     super.initState();
   }
 
@@ -30,6 +39,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Store"),
+      ),
       body: ListView.builder(
         itemCount: models.length,
         itemBuilder: (BuildContext context, int index){
