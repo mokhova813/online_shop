@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:online_shop/models/productModel.dart';
+import 'package:online_shop/screens/user.dart';
+import 'package:online_shop/store.dart';
 
 import 'detailScreen.dart';
 
@@ -17,22 +19,42 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   void initState() {
-    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
-    models.add(new ProductModel("Шорты", "Чуть-чуть воняют", "120 руб"));
-    models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
-    models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
-    models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
-    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
-    models.add(new ProductModel("Шорты", "Чуть-чуть воняют", "120 руб"));
-    models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
-    models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
-    models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
-    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
-    models.add(new ProductModel("Шорты", "Чуть-чуть воняют", "120 руб"));
-    models.add(new ProductModel("Носки", "Всего 4 дырки на каждом", "5 руб"));
-    models.add(new ProductModel("Футболка", "Крутой желтый рисунок подмышками", "200 руб"));
-    models.add(new ProductModel("Куртка", "Рукава продаю отдельно", "100 руб"));
+    models = DataStore.getProducts();
+    DataStore.getListFromApi();
     super.initState();
+  }
+
+  makeList(){
+    return ListView.builder(
+        itemCount: models.length,
+        itemBuilder: (BuildContext context, int index){
+          return Card(
+            child: ListTile (
+                title: Text (models[index].title),
+                leading: Container(
+                  child: Image.network(models.elementAt(index).img, fit: BoxFit.fitHeight,),
+                ),
+                subtitle: Text(models[index].specs+"\n"+models[index].price.toString()+" руб."),
+                trailing: IconButton(
+                  icon: Icon(Icons.add_shopping_cart),
+                  onPressed: (){
+                    final snackBar = SnackBar(
+                      content: Text("Товар добавлен в корзину:\n"+models.elementAt(index).title),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      DataStore.addDetails(models.elementAt(index));
+                    });
+                  },
+                ),
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder:(context) => DetailScreen(models[index])));
+                }
+            ),
+          );
+        }
+    );
   }
 
   @override
@@ -40,25 +62,33 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Store"),
+        title: Text("Каталог"),
+        actions:  [IconButton(
+          icon: const Icon(Icons.account_circle_outlined),
+          tooltip: 'Профиль',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserScreen()),
+            );
+          },
+        ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: models.length,
-        itemBuilder: (BuildContext context, int index){
-          return ListTile (
-              title: Text (models[index].title),
-              leading: Icon(Icons.accessible),
-              subtitle: Text(models[index].subtitle),
-              trailing: Text(models[index].price),
-            onTap: () {
-                Navigator.of(context).push(CupertinoPageRoute(
-                      builder:(context) => DetailScreen(models[index])));
-            }
+      body:
+          FutureBuilder(
+            future: DataStore.getListFromApi(),
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasData){
+                models = snapshot.data;
+                return makeList();
+              }
+              else {
+                return Center(child: CircularProgressIndicator(),);
+              }
+            },
+          )
 
-          );
-        }
-      ),
     );
-
   }
 }

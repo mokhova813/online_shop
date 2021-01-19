@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:online_shop/models/productModel.dart';
+import 'package:online_shop/screens/user.dart';
+import 'package:online_shop/store.dart';
 
 import 'detailScreen.dart';
 
@@ -17,7 +19,7 @@ class _BasketScreenState extends State<BasketScreen> {
 
   @override
   void initState() {
-    models.add(new ProductModel("Ботинки", "Почти новые", "20 руб"));
+    models = DataStore.getDetails();
     super.initState();
   }
 
@@ -25,26 +27,61 @@ class _BasketScreenState extends State<BasketScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Basket"),
-      ),
-
-      body: ListView.builder(
-          itemCount: models.length,
-          itemBuilder: (BuildContext context, int index){
-            return ListTile (
-                title: Text (models[index].title),
-                leading: Icon(Icons.accessible),
-                subtitle: Text(models[index].subtitle),
-                trailing: Text(models[index].price),
-                onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder:(context) => DetailScreen(models[index])));
+        appBar: AppBar(
+          title: Text("Корзина"),
+          actions:  [IconButton(
+            icon: const Icon(Icons.account_circle_outlined),
+            tooltip: 'Профиль',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UserScreen()),
+              );
+            },
+          ),
+          ],
+        ),
+      body:
+      models.length != 0 ?
+        Column(
+          children: [
+            Flexible(
+              child: ListView.builder(
+                itemCount: models.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Card(
+                    child: ListTile (
+                        title: Text (models[index].title),
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          child: Image.network(models.elementAt(index).img),
+                        ),
+                        subtitle: Text(models[index].specs+"\n"+models[index].price.toString()+" руб."),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: (){
+                            setState(() {
+                              DataStore.removeDetails(models.elementAt(index));
+                            });
+                          },
+                        ),
+                    ),
+                  );
                 }
-
-            );
-          }
-      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: RaisedButton(
+                onPressed: (){},
+                child: Text("Оформить заказ на сумму "+DataStore.getTotal().toString()+" руб."),
+              ),
+            )
+          ],
+        )
+        :
+        Center(child: Text("Корзина пуста", style: TextStyle(fontSize: 30),))
     );
 
   }

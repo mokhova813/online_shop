@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.pink,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -54,43 +55,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  int _selectedIndex = 0;
-
-   List<Widget> _widgetOptions = [
-      ProductsScreen(),
-      BasketScreen(),
-      UserScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  var _index = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
+      backgroundColor: Colors.white,
+      body: IndexedStack(
+        index: _index,
+        children: [
+          ProductsScreen(),
+          BasketScreen(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket_outlined),
-            label: 'Basket',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            label: 'Account',
-            ),
-          ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        ),
+        onTap: (selectIndex){
+          setState(() {
+            _index = selectIndex;
+          });
+        },
+        currentIndex: _index,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Каталог"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: "Корзина"),
+        ]
+      ),
     );
+
 
   }
 }
