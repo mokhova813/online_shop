@@ -1,9 +1,10 @@
 # online_shop
 
-A new Flutter application.
+A Flutter application.
+This is a beautiful champagne shop for true ladies and gentlemen.
+
 
 ## Getting Started
-
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
